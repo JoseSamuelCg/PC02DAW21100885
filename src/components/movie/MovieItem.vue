@@ -1,13 +1,12 @@
 <template>
     <q-item clickable class="movie-item">
       <q-item-section avatar>
-        <!-- Mostrar el póster de la película -->
         <img :src="posterUrl" alt="Poster" class="movie-poster" />
       </q-item-section>
       <q-item-section>
         <q-item-label class="movie-title text-bold">{{ movie.title }}</q-item-label>
         <q-item-label caption class="movie-details">
-          Calificación: {{ movie.vote_average }} ({{ movie.vote_count }} votos)
+          ⭐ Calificación: {{ movie.vote_average }} ({{ movie.vote_count }} votos)
         </q-item-label>
       </q-item-section>
     </q-item>
@@ -18,12 +17,11 @@
     props: {
       movie: {
         type: Object,
-        required: true, // El objeto de la película es obligatorio
+        required: true, 
       },
     },
     computed: {
       posterUrl() {
-        // Construir la URL completa para la imagen del póster
         return `http://image.tmdb.org/t/p/w500${this.movie.poster_path}`;
       },
     },
@@ -43,7 +41,7 @@
   }
   
   .movie-poster {
-    width: 80px; /* Ancho fijo para las imágenes */
+    width: 224px; /* Ancho fijo para las imágenes */
     height: auto; /* Mantener la proporción */
     border-radius: 8px; /* Esquinas redondeadas */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */

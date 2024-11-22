@@ -1,64 +1,50 @@
 <template>
-    <q-page class="movie-page">
-      <!-- Filtro -->
-      <movie-filter @filter="updateFilter" />
-  
-      <!-- Lista de películas -->
-      <movie-list :movies="filteredMovies" />
-    </q-page>
-  </template>
-  
-  <script>
-  import MovieFilter from '../components/movie/MovieFilter.vue';
-  import MovieList from '../components/movie/MovieList.vue';
-  
-  export default {
-    components: {
-      MovieFilter,
-      MovieList,
-    },
-    data() {
-      return {
-        movies: [], // Lista completa de películas
-        filteredMovies: [], // Lista filtrada según el criterio del usuario
-      };
-    },
-    methods: {
-      async fetchMovies() {
-        try {
-          // Llamada a la API para obtener películas
-          const response = await this.$tmdbApi.get('/discover/movie', {
-            params: {
-              language: 'es-PE',
-              sort_by: 'popularity.desc',
-            },
-          });
-          this.movies = response.data.results; // Guardar la lista completa de películas
-          this.filteredMovies = this.movies; // Inicialmente no filtrado
-          console.log('Películas cargadas:', this.movies); // Depuración
-        } catch (error) {
-          console.error('Error al cargar las películas:', error);
-        }
+  <q-page>
+    <MovieFilter @filtersChange="updateFilters" />
+    <MovieList :movies="movies" />
+  </q-page>
+</template>
+
+<script>
+import { tmdbApi } from "boot/axios";
+import MovieFilter from "../components/movie/MovieFilter.vue";
+import MovieList from "../components/movie/MovieList.vue";
+
+export default {
+  components: { MovieFilter, MovieList },
+  data() {
+    return {
+      movies: [],
+      filters: {
+        sort_by: "popularity.desc",
+        query: "",
+        page: 1,
       },
-      updateFilter(filterText) {
-        const searchText = filterText.toLowerCase().trim();
-        if (searchText === '') {
-          // Mostrar todas las películas si no hay texto en el filtro
-          this.filteredMovies = this.movies;
-        } else {
-          // Filtrar las películas que contienen el texto ingresado en el título
-          this.filteredMovies = this.movies.filter(movie =>
-            movie.title?.toLowerCase().includes(searchText)
-          );
-        }
-        console.log('Películas filtradas:', this.filteredMovies); // Depuración
-      },
+    };
+  },
+  methods: {
+    async fetchMovies() {
+      try {
+        const endpoint = this.filters.query ? "/search/movie" : "/discover/movie";
+        console.log("Solicitando con filtros a la API:", this.filters); // Depuración
+        const response = await tmdbApi.get(endpoint, { params: this.filters });
+        console.log("Películas obtenidas de la API:", response.data.results); // Depuración
+        this.movies = response.data.results;
+      } catch (error) {
+        console.error("Error al obtener las películas:", error);
+      }
     },
-    mounted() {
-      this.fetchMovies(); // Cargar películas al montar el componente
+    updateFilters(newFilters) {
+      this.filters = { ...this.filters, ...newFilters, page: 1 };
+      console.log("Filtros actualizados:", this.filters); // <-- Agregado para depurar
+      this.fetchMovies();
     },
-  };
-  </script>
+  },
+  mounted() {
+    this.fetchMovies();
+  },
+};
+</script>
   
   <style scoped>
   .movie-page {
