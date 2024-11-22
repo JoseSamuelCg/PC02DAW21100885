@@ -156,43 +156,57 @@
     data() {
       return {
         email: "",
-        password: ""
-      }
+        password: "",
+      };
     },
     methods: {
-      iniciarSesion() {
-        let endpointURL = "/api/v1/user/signin "
-        let user = {
+      async iniciarSesion() {
+        const endpointURL = "/api/v1/user/signin";
+        const user = {
           email: this.email,
-          password: this.password
-        }
-        this.$api.post(endpointURL, user)
-          .then(response => {
-            //Save response.data in LocalStorage
+          password: this.password,
+        };
+
+        try {
+          //Solicitud POST a la API
+          const response = await this.$api.post(endpointURL, user);
+
+          // Verificar si la autenticación fue exitosa
+          if (response.status === 200) {
+            // Guardar la respuesta en el LocalStorage
             localStorage.setItem("userData", JSON.stringify(response.data));
-  
-            console.log(response)
-            //Notify success
+
+            // Notificar éxito
             this.$q.notify({
-              message: 'Bienvenido',
-              color: 'positive',
-              icon: 'check_circle'
-            })
-            //Redirect to  /dashboard
-            this.$router.push("/dashboard/movie")
-  
-          }).catch(error => {
-            //Notify error
+              message: "Bienvenido",
+              color: "positive",
+              icon: "check_circle",
+            });
+
+            // Redirigir a la pregunta 02 (Listado de películas)
+            this.$router.push("/dashboard/peliculas");
+          }
+        } catch (error) {
+          // Manejar errores
+          if (error.response && error.response.status === 401) {
+            // Notificar error de credenciales
             this.$q.notify({
-              message: 'Error de autenticación',
-              color: 'negative',
-              icon: 'error'
-            })
-          });
-      }
-    }
-  
-  }
+              message: "Credenciales incorrectas. Por favor, inténtelo de nuevo.",
+              color: "negative",
+              icon: "error",
+            });
+          } else {
+            // Notificar otros errores
+            this.$q.notify({
+              message: "Ocurrió un error inesperado. Inténtelo más tarde.",
+              color: "negative",
+              icon: "error",
+            });
+          }
+        }
+      },
+    },
+  };
   
   </script>
   
