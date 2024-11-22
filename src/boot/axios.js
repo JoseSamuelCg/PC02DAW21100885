@@ -9,6 +9,14 @@ import axios from 'axios'
 // for each client)
 const api = axios.create({ baseURL: 'https://api.example.com' })
 
+const apiTMDB = axios.create({
+  baseURL: 'https://api.themoviedb.org/3',
+  headers: {
+    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiNmI3MmQwZWZiMWE2YzA3ODE4NjRlOTViZDVmMjU0ZCIsIm5iZiI6MTczMjIzNzU3Ni41MzgyMDEzLCJzdWIiOiI2NzNmZDcwODRkZmEwNmI1ZGY5MmRlZGMiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.C5N6hiYJzN-mbVS5NR_NS5AJZkcoJKBjJgmNIMrk13o',
+    Accept: 'application/json',
+  },
+});
+
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
@@ -19,6 +27,8 @@ export default boot(({ app }) => {
   app.config.globalProperties.$api = api
   // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
   //       so you can easily perform requests against your app's API
+
+  app.config.globalProperties.$apiTMDB = apiTMDB;
 })
 
 export { api }
