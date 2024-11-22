@@ -184,7 +184,7 @@
             });
 
             // Redirigir a la pregunta 02 (Listado de películas)
-            this.$router.push("/dashboard/peliculas");
+            this.$router.push("/dashboard/movie");
           }
         } catch (error) {
           // Manejar errores

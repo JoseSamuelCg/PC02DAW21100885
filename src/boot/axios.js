@@ -8,17 +8,24 @@ import axios from 'axios'
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({ baseURL: 'http://68.183.142.21' })
+const tmdbApi = axios.create({ baseURL: 'https://api.themoviedb.org/3',
+  params: {
+    api_key: 'b6b72d0efb1a6c0781864e95bd5f254d'
+  }
+}); // Para TMDB
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
-  app.config.globalProperties.$axios = axios
+  app.config.globalProperties.$axios = axios;
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
   //       so you won't necessarily have to import axios in each vue file
 
-  app.config.globalProperties.$api = api
+  app.config.globalProperties.$api = api;
   // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
   //       so you can easily perform requests against your app's API
+
+  app.config.globalProperties.$tmdbApi = tmdbApi; // Para la API de TMDB
 })
 
-export { api }
+export { api, tmdbApi  }
